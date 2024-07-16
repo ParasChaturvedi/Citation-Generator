@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citation Generator</title>
+</head>
+<style>
+    /* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+select, input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    width: 48%;
+    padding: 10px;
+    background-color: #28a745;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+button[type="button"]:last-child {
+    background-color: #dc3545;
+}
+
+button[type="button"]:last-child:hover {
+    background-color: #c82333;
+}
+
+.citation-output {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #e9ecef;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-style: italic;
+}
+
+</style>
+<body>
+    <div class="container">
+        <h1>Citation Generator</h1>
+        <form id="citationForm">
+            <label for="citationStyle">Citation Style:</label>
+            <select id="citationStyle" name="citationStyle" required>
+                <option value="apa">APA</option>
+                <option value="mla">MLA</option>
+                <option value="chicago">Chicago</option>
+            </select>
+            
+            <label for="sourceType">Source Type:</label>
+            <select id="sourceType" name="sourceType" required>
+                <option value="book">Book</option>
+                <option value="article">Article</option>
+                <option value="website">Website</option>
+            </select>
+            
+            <div id="dynamicFields">
+                <!-- Dynamic input fields will be inserted here based on the source type -->
+            </div>
+            
+            <button type="button" onclick="generateCitation()">Generate Citation</button>
+            <button type="button" onclick="resetForm()">Reset</button>
+        </form>
+        <div id="citationOutput" class="citation-output"></div>
+    </div>
+    <script>
+        // script.js
+document.getElementById('sourceType').addEventListener('change', function() {
+    updateDynamicFields();
+});
+
+function updateDynamicFields() {
+    const sourceType = document.getElementById('sourceType').value;
+    const dynamicFields = document.getElementById('dynamicFields');
+    dynamicFields.innerHTML = '';
+
+    if (sourceType === 'book') {
+        dynamicFields.innerHTML += `
+            <label for="author">Author:</label>
+            <input type="text" id="author" name="author" required>
+            
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+            
+            <label for="year">Year:</label>
+            <input type="number" id="year" name="year" required>
+            
+            <label for="publisher">Publisher:</label>
+            <input type="text" id="publisher" name="publisher" required>
+        `;
+    } else if (sourceType === 'article') {
+        dynamicFields.innerHTML += `
+            <label for="author">Author:</label>
+            <input type="text" id="author" name="author" required>
+            
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+            
+            <label for="journal">Journal:</label>
+            <input type="text" id="journal" name="journal" required>
+            
+            <label for="year">Year:</label>
+            <input type="number" id="year" name="year" required>
+            
+            <label for="volume">Volume:</label>
+            <input type="text" id="volume" name="volume" required>
+            
+            <label for="pages">Pages:</label>
+            <input type="text" id="pages" name="pages" required>
+        `;
+    } else if (sourceType === 'website') {
+        dynamicFields.innerHTML += `
+            <label for="author">Author:</label>
+            <input type="text" id="author" name="author">
+            
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+            
+            <label for="websiteName">Website Name:</label>
+            <input type="text" id="websiteName" name="websiteName" required>
+            
+            <label for="url">URL:</label>
+            <input type="url" id="url" name="url" required>
+            
+            <label for="dateAccessed">Date Accessed:</label>
+            <input type="date" id="dateAccessed" name="dateAccessed" required>
+        `;
+    }
+}
+
+function generateCitation() {
+    const citationStyle = document.getElementById('citationStyle').value;
+    const sourceType = document.getElementById('sourceType').value;
+    const citationOutput = document.getElementById('citationOutput');
+    
+    let citation = '';
+
+    if (sourceType === 'book') {
+        const author = document.getElementById('author').value;
+        const title = document.getElementById('title').value;
+        const year = document.getElementById('year').value;
+        const publisher = document.getElementById('publisher').value;
+
+        if (citationStyle === 'apa') {
+            citation = `${author}. (${year}). *${title}*. ${publisher}.`;
+        } else if (citationStyle === 'mla') {
+            citation = `${author}. *${title}*. ${publisher}, ${year}.`;
+        } else if (citationStyle === 'chicago') {
+            citation = `${author}. ${year}. *${title}*. ${publisher}.`;
+        }
+    } else if (sourceType === 'article') {
+        const author = document.getElementById('author').value;
+        const title = document.getElementById('title').value;
+        const journal = document.getElementById('journal').value;
+        const year = document.getElementById('year').value;
+        const volume = document.getElementById('volume').value;
+        const pages = document.getElementById('pages').value;
+
+        if (citationStyle === 'apa') {
+            citation = `${author}. (${year}). ${title}. *${journal}*, ${volume}, ${pages}.`;
+        } else if (citationStyle === 'mla') {
+            citation = `${author}. "${title}." *${journal}*, vol. ${volume}, ${year}, pp. ${pages}.`;
+        } else if (citationStyle === 'chicago') {
+            citation = `${author}. "${title}." *${journal}* ${volume} (${year}): ${pages}.`;
+        }
+    } else if (sourceType === 'website') {
+        const author = document.getElementById('author').value;
+        const title = document.getElementById('title').value;
+        const websiteName = document.getElementById('websiteName').value;
+        const url = document.getElementById('url').value;
+        const dateAccessed = document.getElementById('dateAccessed').value;
+
+        if (citationStyle === 'apa') {
+            citation = `${author}. (${dateAccessed}). ${title}. *${websiteName}*. Retrieved from ${url}`;
+        } else if (citationStyle === 'mla') {
+            citation = `${author}. "${title}." *${websiteName}*, ${dateAccessed}, ${url}.`;
+        } else if (citationStyle === 'chicago') {
+            citation = `${author}. "${title}." *${websiteName}*. Last modified ${dateAccessed}. ${url}.`;
+        }
+    }
+
+    citationOutput.innerHTML = citation;
+}
+
+function resetForm() {
+    document.getElementById('citationForm').reset();
+    document.getElementById('dynamicFields').innerHTML = '';
+    document.getElementById('citationOutput').innerHTML = '';
+}
+    </script>
+</body>
+</html>
